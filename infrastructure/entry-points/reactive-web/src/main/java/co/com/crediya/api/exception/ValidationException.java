@@ -1,5 +1,8 @@
 package co.com.crediya.api.exception;
 
+import lombok.Getter;
+
+@Getter
 public class ValidationException extends RuntimeException {
     private final int status;
 
@@ -8,7 +11,4 @@ public class ValidationException extends RuntimeException {
         this.status = status;
     }
 
-    public int getStatus() {
-        return status;
-    }
 }
