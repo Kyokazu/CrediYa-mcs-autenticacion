@@ -11,5 +11,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class UserPath {
 
     private String users;
-    private String usersByMail;
+    private String userByEmail;
+    private String userByIdentification;
 }

@@ -6,6 +6,7 @@ import jakarta.validation.Validator;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -19,13 +20,15 @@ public class ValidatorUtil {
 
     public <T> Mono<T> validate(T obj) {
         Set<ConstraintViolation<T>> violations = validator.validate(obj);
+
         if (!violations.isEmpty()) {
-            String errorMessage = violations.stream()
-                    .map(ConstraintViolation::getMessage)
-                    .findFirst()
-                    .orElse("Validation error");
-            return Mono.error(new ValidationException(errorMessage, 400));
+            List<String> errorMessages = violations.stream()
+                    .map(violation -> violation.getPropertyPath() + " " + violation.getMessage())
+                    .toList();
+
+            return Mono.error(new ValidationException(errorMessages, 400));
         }
+
         return Mono.just(obj);
     }
 }

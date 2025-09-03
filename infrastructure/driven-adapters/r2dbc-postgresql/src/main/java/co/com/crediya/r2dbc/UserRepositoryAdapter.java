@@ -32,12 +32,34 @@ public class UserRepositoryAdapter extends ReactiveAdapterOperations<User, UserE
     }
 
     @Override
+    public Mono<User> findByIdentification(String identification) {
+        User user = User.builder()
+                .identification(identification)
+                .build();
+        return super.findByExample(user)
+                .doOnNext(exists -> log.debug("findByIdentification with param: {} -> {}", identification, exists))
+                .next();
+    }
+
+    @Override
     public Mono<Boolean> existingEmail(String email) {
         User user = User.builder()
                 .email(email)
                 .build();
         return super.findByExample(user)
                 .doOnNext(exists -> log.debug("existsByMail with param: {} -> {}", email, exists))
+                .next()
+                .map(u -> true)
+                .defaultIfEmpty(false);
+    }
+
+    @Override
+    public Mono<Boolean> existingIdentification(String identification) {
+        User user = User.builder()
+                .identification(identification)
+                .build();
+        return super.findByExample(user)
+                .doOnNext(exists -> log.debug("existsByIdentification with param: {} -> {}", identification, exists))
                 .next()
                 .map(u -> true)
                 .defaultIfEmpty(false);

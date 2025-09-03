@@ -9,5 +9,9 @@ public interface UserRepository {
 
     Mono<User> findByEmail(String email);
 
+    Mono<User> findByIdentification(String identification);
+
     Mono<Boolean> existingEmail(String email);
+
+    Mono<Boolean> existingIdentification(String identification);
 }

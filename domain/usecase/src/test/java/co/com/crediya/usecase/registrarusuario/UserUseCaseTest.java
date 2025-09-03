@@ -2,7 +2,7 @@ package co.com.crediya.usecase.registrarusuario;
 
 import co.com.crediya.model.user.User;
 import co.com.crediya.model.user.gateways.UserRepository;
-import co.com.crediya.usecase.usuario.EmailAlreadyExistsException;
+import co.com.crediya.usecase.usuario.exception.EmailAlreadyExistsException;
 import co.com.crediya.usecase.usuario.UserUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

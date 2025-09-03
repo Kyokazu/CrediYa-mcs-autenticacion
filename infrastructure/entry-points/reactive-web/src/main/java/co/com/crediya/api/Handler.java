@@ -4,8 +4,10 @@ import co.com.crediya.api.dto.SaveUserDTO;
 import co.com.crediya.api.exception.ValidationException;
 import co.com.crediya.api.util.ValidatorUtil;
 import co.com.crediya.model.user.User;
-import co.com.crediya.usecase.usuario.EmailAlreadyExistsException;
+import co.com.crediya.usecase.usuario.exception.EmailAlreadyExistsException;
 import co.com.crediya.usecase.usuario.UserUseCase;
+import co.com.crediya.usecase.usuario.exception.IdentificationAlreadyExistsException;
+import co.com.crediya.usecase.usuario.exception.UserNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,9 +40,19 @@ public class Handler {
                 .flatMap(savedUser -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(savedUser))
+                .onErrorResume(ValidationException.class, e ->
+                        ServerResponse.badRequest()
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .bodyValue(Map.of(
+                                        "status", e.getStatus(),
+                                        "error", "Errores de validación",
+                                        "errors", e.getErrors(),
+                                        "timestamp", LocalDateTime.now().toString()
+                                ))
+                )
 
-                .onErrorResume(EmailAlreadyExistsException.class, e ->
-                        ServerResponse.status(HttpStatus.CONFLICT)
+                .onErrorResume(ex -> ex instanceof EmailAlreadyExistsException || ex instanceof IdentificationAlreadyExistsException,
+                        e -> ServerResponse.status(HttpStatus.CONFLICT)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .bodyValue(Map.of(
                                         "error", e.getMessage(),
@@ -50,6 +62,25 @@ public class Handler {
                 );
     }
 
+    public Mono<ServerResponse> listenGetUserByIdentification(ServerRequest serverRequest) {
+        return Mono.fromCallable(() -> serverRequest.pathVariable("identification"))
+                .map(String::trim)
+                .filter(item -> !item.isBlank())
+                .flatMap(userUseCase::findByIdentification)
+                .flatMap(user -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(user))
+                .switchIfEmpty(ServerResponse.notFound().build())
+                .onErrorResume(UserNotFoundException.class,
+                        e -> ServerResponse.status(HttpStatus.CONFLICT)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .bodyValue(Map.of(
+                                        "error", e.getMessage(),
+                                        "status", HttpStatus.CONFLICT.value(),
+                                        "timestamp", LocalDateTime.now().toString()
+                                ))
+                );
+    }
 
 
 }

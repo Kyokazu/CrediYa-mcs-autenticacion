@@ -19,6 +19,7 @@ public class User {
 
     private UUID id;
     private String name;
+    private String identification;
     private String lastname;
     private LocalDate birthdate;
     private String address;

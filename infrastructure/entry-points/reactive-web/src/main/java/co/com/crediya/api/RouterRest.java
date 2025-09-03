@@ -23,6 +23,7 @@ public class RouterRest {
     public RouterFunction<ServerResponse> routerFunction(Handler handler) {
         return route()
                 .POST(userPath.getUsers(), userHandler::listenSaveUser)
+                .GET(userPath.getUserByIdentification(), userHandler::listenGetUserByIdentification)
                 .build();
 
     }

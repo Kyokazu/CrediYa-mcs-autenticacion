@@ -21,6 +21,9 @@ public class SaveUserDTO {
     @NotBlank(message = "Lastname is mandatory")
     private String lastname;
 
+    @NotBlank(message = "Identification is mandatory")
+    private String identification;
+
     @NotNull(message = "Birthdate is mandatory")
     private LocalDate birthdate;
 
