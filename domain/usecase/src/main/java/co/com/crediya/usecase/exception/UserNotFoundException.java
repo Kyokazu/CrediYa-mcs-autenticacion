@@ -1,4 +1,4 @@
-package co.com.crediya.usecase.usuario.exception;
+package co.com.crediya.usecase.exception;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(String message) {

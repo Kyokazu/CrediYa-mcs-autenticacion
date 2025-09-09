@@ -25,6 +25,8 @@ public class User {
     private String address;
     private String phone;
     private String email;
+    private String password;
     private BigDecimal income;
+    private UUID roleId;
 
 }

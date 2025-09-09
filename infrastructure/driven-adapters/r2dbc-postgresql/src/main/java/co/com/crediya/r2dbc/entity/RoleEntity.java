@@ -5,29 +5,20 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.UUID;
 
-@Table("users")
+@Table("roles")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserEntity {
+public class RoleEntity {
 
     @Id
     @Column("id")
     private UUID id;
     private String name;
-    private String lastname;
-    private String identification;
-    private LocalDate birthdate;
-    private String address;
-    private String phone;
-    private String email;
-    private String password;
-    private BigDecimal income;
-    private UUID roleId;
+    private String description;
+
 }

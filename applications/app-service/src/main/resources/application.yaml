@@ -31,9 +31,14 @@ springdoc:
 
 routes:
   paths:
-    users: "/api/v1/users"
-    userByEmail: "/api/v1/users/{email}"
-    userByIdentification: "/api/v1/users/{identification}"
+    users:
+      users: "/api/v1/users"
+      userByEmail: "/api/v1/user/{email}"
+      userByIdentification: "/api/v1/users/{identification}"
+      emailByIdentification: "/api/v1/users/email/{identification}"
+    auth:
+      login: "/api/v1/login"
+      validateUser: "/api/v1/auth"
 
 adapters:
   r2dbc:

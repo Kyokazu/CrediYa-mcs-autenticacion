@@ -4,18 +4,17 @@ import co.com.crediya.model.user.User;
 import co.com.crediya.model.user.gateways.UserRepository;
 import co.com.crediya.r2dbc.entity.UserEntity;
 import co.com.crediya.r2dbc.helper.ReactiveAdapterOperations;
+import lombok.extern.slf4j.Slf4j;
 import org.reactivecommons.utils.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
 @Repository
+@Slf4j
 public class UserRepositoryAdapter extends ReactiveAdapterOperations<User, UserEntity, UUID, UserReactiveRepository> implements UserRepository {
 
-    private static final Logger log = LoggerFactory.getLogger(UserRepositoryAdapter.class);
 
     public UserRepositoryAdapter(UserReactiveRepository repository, ObjectMapper mapper) {
         super(repository, mapper, entity -> mapper.map(entity, User.class));
@@ -28,8 +27,14 @@ public class UserRepositoryAdapter extends ReactiveAdapterOperations<User, UserE
 
     @Override
     public Mono<User> findByEmail(String email) {
-        return null;
+        User user = User.builder()
+                .email(email)
+                .build();
+        return super.findByExample(user)
+                .doOnNext(exists -> log.debug("findByEmailwith param: {} -> {}", email, exists))
+                .next();
     }
+
 
     @Override
     public Mono<User> findByIdentification(String identification) {

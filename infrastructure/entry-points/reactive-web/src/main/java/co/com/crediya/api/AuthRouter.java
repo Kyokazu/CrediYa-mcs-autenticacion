@@ -1,6 +1,7 @@
 package co.com.crediya.api;
 
-import co.com.crediya.api.config.UserPath;
+import co.com.crediya.api.config.AuthPath;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -13,18 +14,18 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
-public class RouterRest {
+@Tag(name = "Auth", description = "Endpoints related to auth management")
 
-    private final UserPath userPath;
-    private final Handler userHandler;
+public class AuthRouter {
 
+    private final AuthHandler authHandler;
+    private final AuthPath authPath;
 
     @Bean
-    public RouterFunction<ServerResponse> routerFunction(Handler handler) {
+    public RouterFunction<ServerResponse> authRoutes() {
         return route()
-                .POST(userPath.getUsers(), userHandler::listenSaveUser)
-                .GET(userPath.getUserByIdentification(), userHandler::listenGetUserByIdentification)
+                .POST(authPath.getLogin(), authHandler::login)
+                .GET(authPath.getValidateUser(), authHandler::validateUser)
                 .build();
-
     }
 }
