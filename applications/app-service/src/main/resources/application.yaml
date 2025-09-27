@@ -2,9 +2,7 @@ server:
   port: 8080
 spring:
   application:
-    name: "msc-autenticacion"
-  devtools:
-    add-properties: false
+    name: "autenticacion"
   h2:
     console:
       enabled: true
@@ -15,7 +13,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: "health,prometheus"
+        include: "health,info"
   endpoint:
     health:
       probes:
@@ -42,9 +40,13 @@ routes:
 
 adapters:
   r2dbc:
-    host: "localhost"
-    port: 5432
-    database: "msc_autenticacion"
-    schema: "public"
-    username: "admin"
-    password: "adminpassword"
+    host: "${R2DBC_HOST}"
+    port: "${R2DBC_PORT}"
+    database: "${R2DBC_DATABASE}"
+    schema: "${R2DBC_SCHEMA}"
+    username: "${R2DBC_USERNAME}"
+    password: "${R2DBC_PASSWORD}"
+
+jwt:
+  secret: "${JWT_SECRET}"
+  expiration-ms: "${JWT_EXPIRATION}"

@@ -1,6 +1,7 @@
 package co.com.crediya.api.openapi;
 
 
+import co.com.crediya.api.dto.ApiErrorDTO;
 import co.com.crediya.api.dto.SaveUserDTO;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.MediaType;
@@ -32,7 +33,7 @@ public class UserApiDoc {
                 .response(responseBuilder().responseCode("400").description("Invalid input data")
                         .content(contentBuilder()
                                 .mediaType(MediaType.APPLICATION_JSON_VALUE)
-                                .schema(schemaBuilder().type("string"))));
+                                .schema(schemaBuilder().implementation(ApiErrorDTO.class))));
     }
 
     public Builder getUserByIdentificationDoc(Builder builder) {
@@ -47,7 +48,7 @@ public class UserApiDoc {
                 .response(responseBuilder().responseCode("404").description("User not found")
                         .content(contentBuilder()
                                 .mediaType(MediaType.APPLICATION_JSON_VALUE)
-                                .schema(schemaBuilder().type("string"))));
+                                .schema(schemaBuilder().implementation(ApiErrorDTO.class))));
     }
 
     public Builder getEmailByIdentificationDoc(Builder builder) {
@@ -62,7 +63,7 @@ public class UserApiDoc {
                 .response(responseBuilder().responseCode("404").description("User not found")
                         .content(contentBuilder()
                                 .mediaType(MediaType.APPLICATION_JSON_VALUE)
-                                .schema(schemaBuilder().type("string"))));
+                                .schema(schemaBuilder().implementation(ApiErrorDTO.class))));
     }
 
     public Builder getUserByEmail(Builder builder) {
@@ -77,7 +78,7 @@ public class UserApiDoc {
                 .response(responseBuilder().responseCode("404").description("User not found")
                         .content(contentBuilder()
                                 .mediaType(MediaType.APPLICATION_JSON_VALUE)
-                                .schema(schemaBuilder().type("string"))));
+                                .schema(schemaBuilder().implementation(ApiErrorDTO.class))));
 
     }
 

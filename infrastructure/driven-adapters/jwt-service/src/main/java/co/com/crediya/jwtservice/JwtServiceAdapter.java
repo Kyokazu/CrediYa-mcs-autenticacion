@@ -6,20 +6,21 @@ import co.com.crediya.model.user.UserTokenInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.Date;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 public class JwtServiceAdapter implements JwtGateway {
 
-    private final String secret = "dGhpcy1pcy1hLXRlc3Qtc2VjcmV0LWZvci1kZXZlbG9wbWVudC1vbmx5LWRvLW5vdC11c2UtaW4tcHJvZHVjdGlvbi1lbnZpcm9ubWVudA==";
-    private final long expirationMs = 3600_000;
+    @Value("${jwt.secret}")
+    private String secret;
+    @Value("${jwt.expiration-ms}")
+    private long expirationMs;
 
     @Override
     public String generateToken(User user) {

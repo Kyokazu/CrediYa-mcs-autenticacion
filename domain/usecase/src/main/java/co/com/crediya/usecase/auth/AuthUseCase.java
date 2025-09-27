@@ -5,6 +5,8 @@ import co.com.crediya.model.user.UserTokenInfo;
 import co.com.crediya.model.user.gateways.JwtGateway;
 import co.com.crediya.model.user.gateways.RoleRepository;
 import co.com.crediya.model.user.gateways.UserRepository;
+import co.com.crediya.usecase.exception.InvalidCredentialsException;
+import co.com.crediya.usecase.exception.InvalidTokenException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
@@ -19,21 +21,20 @@ public class AuthUseCase {
 
     public Mono<UserTokenInfo> login(User user) {
         return userRepository.findByEmail(user.getEmail())
-                .switchIfEmpty(Mono.error(new RuntimeException("Invalid credentials")))
+                .switchIfEmpty(Mono.error(new InvalidCredentialsException("Wrong email or password")))
                 .flatMap(u -> validatePassword(user.getPassword(), u.getPassword())
                         .then(generateUserTokenInfo(u))
                 );
     }
-
-
+    
     public Mono<UserTokenInfo> validateToken(String token) {
         return jwtGateway.validateToken(token)
-                .switchIfEmpty(Mono.error(new RuntimeException("Invalid or expired token")));
+                .switchIfEmpty(Mono.error(new InvalidTokenException("Invalid or expired token")));
     }
 
     private Mono<Void> validatePassword(String inputPassword, String storedPassword) {
         if (!inputPassword.equals(storedPassword)) {
-            return Mono.error(new RuntimeException("Invalid credentials"));
+            return Mono.error(new InvalidCredentialsException("Invalid credentials"));
         }
         return Mono.empty();
     }

@@ -39,7 +39,7 @@ public class UserHandler {
         return getValidatedUser(request, allowedRoles)
                 .flatMap(loggedUser -> extractAndValidateBody(request, SaveUserDTO.class)
                         .map(this::buildUserFromDTO)
-                        .flatMap(user -> userUseCase.save(user, loggedUser.getRoleName()))
+                        .flatMap(userUseCase::save)
                 )
                 .as(txOperator::transactional)
                 .doOnNext(savedUser -> log.info("User created successfully: {}", savedUser.getEmail()))
@@ -111,6 +111,7 @@ public class UserHandler {
 
     private UserInfoDTO toUserInfoDTO(User user) {
         return UserInfoDTO.builder()
+                .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
                 .income(user.getIncome())

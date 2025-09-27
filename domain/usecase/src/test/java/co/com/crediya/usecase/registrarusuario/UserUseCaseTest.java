@@ -58,7 +58,7 @@ class UserUseCaseTest {
         when(roleRepository.findRoleIdByName(ROLE_NAME)).thenReturn(Mono.just(ROLE_ID));
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> Mono.just(invocation.getArgument(0)));
 
-        StepVerifier.create(userUseCase.save(sampleUser, ROLE_NAME))
+        StepVerifier.create(userUseCase.save(sampleUser))
                 .assertNext(user -> {
                     assertEquals(VALID_EMAIL, user.getEmail());
                     assertEquals(VALID_IDENTIFICATION, user.getIdentification());
@@ -76,7 +76,7 @@ class UserUseCaseTest {
     void shouldFailWhenEmailAlreadyExists() {
         when(userRepository.existingEmail(VALID_EMAIL)).thenReturn(Mono.just(true));
 
-        StepVerifier.create(userUseCase.save(sampleUser, ROLE_NAME))
+        StepVerifier.create(userUseCase.save(sampleUser))
                 .expectErrorMatches(throwable ->
                         throwable instanceof EmailAlreadyExistsException &&
                                 throwable.getMessage().equals("The email is already in use"))
@@ -92,7 +92,7 @@ class UserUseCaseTest {
         when(userRepository.existingEmail(VALID_EMAIL)).thenReturn(Mono.just(false));
         when(userRepository.existingIdentification(VALID_IDENTIFICATION)).thenReturn(Mono.just(true));
 
-        StepVerifier.create(userUseCase.save(sampleUser, ROLE_NAME))
+        StepVerifier.create(userUseCase.save(sampleUser))
                 .expectErrorMatches(throwable ->
                         throwable instanceof IdentificationAlreadyExistsException &&
                                 throwable.getMessage().equals("The identification is already in use"))
@@ -109,7 +109,7 @@ class UserUseCaseTest {
         when(userRepository.existingIdentification(VALID_IDENTIFICATION)).thenReturn(Mono.just(false));
         when(roleRepository.findRoleIdByName(ROLE_NAME)).thenReturn(Mono.empty());
 
-        StepVerifier.create(userUseCase.save(sampleUser, ROLE_NAME))
+        StepVerifier.create(userUseCase.save(sampleUser))
                 .expectErrorMatches(throwable ->
                         throwable instanceof RoleNotFoundException &&
                                 throwable.getMessage().equals("Role not found: " + ROLE_NAME))

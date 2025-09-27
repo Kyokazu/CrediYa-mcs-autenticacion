@@ -20,7 +20,7 @@ public class UserUseCase {
     private final RoleRepository roleRepository;
 
 
-    public Mono<User> save(User user, String roleName) {
+    public Mono<User> save(User user) {
         return userRepository.existingEmail(user.getEmail()).flatMap(exists -> {
                     if (Boolean.TRUE.equals(exists)) {
                         return Mono.error(new EmailAlreadyExistsException("The email is already in use"));
@@ -30,7 +30,7 @@ public class UserUseCase {
                     if (Boolean.TRUE.equals(exists)) {
                         return Mono.error(new IdentificationAlreadyExistsException("The identification is already in use"));
                     }
-                    return roleRepository.findRoleIdByName(roleName).switchIfEmpty(Mono.error(new RoleNotFoundException("Role not found: " + roleName)));
+                    return roleRepository.findRoleIdByName("CLIENT").switchIfEmpty(Mono.error(new RoleNotFoundException("Role not found: " + "CLIENT")));
                 }).map(roleId ->
                         user.toBuilder()
                                 .roleId(roleId)

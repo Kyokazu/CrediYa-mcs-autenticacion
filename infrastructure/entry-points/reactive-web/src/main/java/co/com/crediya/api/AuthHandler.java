@@ -2,6 +2,7 @@ package co.com.crediya.api;
 
 import co.com.crediya.api.dto.LoggedUserDTO;
 import co.com.crediya.api.dto.LoginDTO;
+import co.com.crediya.api.exception.MissingInvalidAuthHeaderException;
 import co.com.crediya.api.util.ValidatorUtil;
 import co.com.crediya.model.user.User;
 import co.com.crediya.usecase.auth.AuthUseCase;
@@ -42,7 +43,7 @@ public class AuthHandler {
     public Mono<ServerResponse> validateUser(ServerRequest request) {
         return Mono.justOrEmpty(request.headers().firstHeader("Authorization"))
                 .filter(header -> header.startsWith("Bearer "))
-                .switchIfEmpty(Mono.error(new RuntimeException("Missing or invalid Authorization header")))
+                .switchIfEmpty(Mono.error(new MissingInvalidAuthHeaderException("Missing or invalid Authorization header")))
                 .map(header -> header.substring(7))
                 .flatMap(token ->
                         authUseCase.validateToken(token)

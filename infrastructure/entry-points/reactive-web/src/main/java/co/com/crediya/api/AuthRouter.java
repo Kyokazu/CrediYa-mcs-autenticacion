@@ -1,6 +1,7 @@
 package co.com.crediya.api;
 
 import co.com.crediya.api.config.AuthPath;
+import co.com.crediya.api.openapi.AuthApiDoc;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import static org.springframework.web.reactive.function.server.RouterFunctions.route;
+import static org.springdoc.webflux.core.fn.SpringdocRouteBuilder.route;
 
 @Configuration
 @Slf4j
@@ -24,8 +25,8 @@ public class AuthRouter {
     @Bean
     public RouterFunction<ServerResponse> authRoutes() {
         return route()
-                .POST(authPath.getLogin(), authHandler::login)
-                .GET(authPath.getValidateUser(), authHandler::validateUser)
+                .POST(authPath.getLogin(), authHandler::login, AuthApiDoc::loginDoc)
+                .GET(authPath.getValidateUser(), authHandler::validateUser, AuthApiDoc::validateUserDoc)
                 .build();
     }
 }

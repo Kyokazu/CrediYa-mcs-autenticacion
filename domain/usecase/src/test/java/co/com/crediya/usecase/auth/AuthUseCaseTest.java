@@ -117,8 +117,13 @@ class AuthUseCaseTest {
     @Test
     @DisplayName("Should validate token successfully")
     void shouldValidateTokenSuccessfully() {
+        UserTokenInfo userTokenInfo = UserTokenInfo.builder()
+                .email(VALID_EMAIL)
+                .role("CLIENT")
+                .token(TOKEN)
+                .build();
+
         when(jwtGateway.validateToken(TOKEN)).thenReturn(Mono.just(userTokenInfo));
-        when(roleRepository.findRoleNameById(ROLE_ID)).thenReturn(Mono.just("CLIENT"));
 
         StepVerifier.create(authUseCase.validateToken(TOKEN))
                 .assertNext(info -> {
@@ -129,7 +134,6 @@ class AuthUseCaseTest {
                 .verifyComplete();
 
         verify(jwtGateway).validateToken(TOKEN);
-        verify(roleRepository).findRoleNameById(ROLE_ID);
     }
 
     @Test
@@ -147,10 +151,9 @@ class AuthUseCaseTest {
     }
 
     @Test
-    @DisplayName("Should fail validateToken when role not found")
-    void shouldFailValidateTokenWhenRoleNotFound() {
-        when(jwtGateway.validateToken(TOKEN)).thenReturn(Mono.just(userTokenInfo));
-        when(roleRepository.findRoleNameById(ROLE_ID)).thenReturn(Mono.empty());
+    @DisplayName("Should fail validateToken when token is invalid or expired")
+    void shouldFailValidateTokenWhenInvalidOrExpired() {
+        when(jwtGateway.validateToken(TOKEN)).thenReturn(Mono.empty());
 
         StepVerifier.create(authUseCase.validateToken(TOKEN))
                 .expectErrorMatches(e -> e instanceof RuntimeException &&
@@ -158,6 +161,5 @@ class AuthUseCaseTest {
                 .verify();
 
         verify(jwtGateway).validateToken(TOKEN);
-        verify(roleRepository).findRoleNameById(ROLE_ID);
     }
 }
